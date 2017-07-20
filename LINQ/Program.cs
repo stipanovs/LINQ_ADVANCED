@@ -32,6 +32,7 @@ namespace LINQ
                 new Smartphone {Model = "Nokia 7", Producer=nokia, Ram=6, Rom=64, System = "Windows"},
                 new Smartphone {Model = "Leeco 2", Producer=leeco, Ram=2, Rom=32, System = "Android"},
                 new Smartphone {Model = "Leeco LeMAX", Producer=leeco, Ram=3, Rom=32, System = "Android"}
+                
             };
 
             var newSmartphones = new List<Smartphone>
@@ -50,23 +51,43 @@ namespace LINQ
             var filterQuery = smartphones
                 .Where(s => s.Ram > 3)
                 .Select(s => s.Producer.Name.ToUpper() + " " + s.Model.ToUpper());
-
+            
             foreach (var result in filterQuery)
             {
                 WriteLine(result);
             }
             WriteLine();
 
-           // Joining: Join, GroupJoin, Zip
+            WriteLine("Filtering TakeWhile:");
+            var filterTakeWhile = smartphones.TakeWhile(s => s.Ram > 3);
+
+            foreach (var result in filterTakeWhile)
+            {
+                WriteLine(result.Model);
+            }
+            WriteLine();
+
+            WriteLine("Filtering SkipWhile:");
+            var filterSkipWhile = smartphones.SkipWhile(s => s.Ram > 3);
+
+            foreach (var result in filterSkipWhile)
+            {
+                WriteLine(result.Model);
+            }
+            WriteLine();
+
+            
+            
+            // Joining: Join, GroupJoin, Zip
             WriteLine("Joining:");
-            var q =
+            var joinQuery =
                 from c in companies
                 join s in smartphones on c equals s.Producer
                 select new
                 {Company ="Company: " + c.Name,
                 Description = "Model: " + s.Model + " System " + s.System};
   
-            foreach (var v in q)
+            foreach (var v in joinQuery)
             {
                 WriteLine(v.Company + ": " + v.Description);
             }
@@ -81,7 +102,6 @@ namespace LINQ
             {
                 WriteLine(v.Company + v.Product);
             }
-
             WriteLine();
 
             // Ordering: OrderBy, ThenBy, OrderByDescending, ThenByDescending, Reverse
@@ -183,15 +203,17 @@ namespace LINQ
             }
             WriteLine();
             // Closures
-
-            var i = GiveMeAction();
-            i();
-
-
+            WriteLine("Closures");
+            var res = GiveMeAction();
+            res();
+            WriteLine();
+           
             var resultGetAFunc = GetAFunc();
-            
-            WriteLine(resultGetAFunc(0)); //2
-            WriteLine(resultGetAFunc(3)); //5
+
+            WriteLine(resultGetAFunc(5)); //7
+            WriteLine(resultGetAFunc(6)); //9
+            WriteLine(resultGetAFunc(7)); //11
+            WriteLine(resultGetAFunc(8)); //13
             ReadKey();
         }
 
@@ -207,7 +229,7 @@ namespace LINQ
             var myVar = 1;
             Func<int, int> inc = delegate(int var1)
             {
-                myVar++;
+                myVar = myVar + 1;
                 return var1 + myVar;
 
             };
